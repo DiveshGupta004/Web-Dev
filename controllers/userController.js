@@ -1,5 +1,6 @@
 const User = require("../models/userModels");
 const bcrypt = require("bcrypt");
+const validator = require("validator");
 const generateToken = require("../utils/generateToken");
 
 const registerUser = async (req, res) => {
@@ -9,6 +10,14 @@ const registerUser = async (req, res) => {
 
   if (!firstName || !emailId || !password) {
     return res.status(400).send({ message: "Please Add all mandatory fields" });
+  }
+
+  if(!validator.isEmail(emailId)){
+    return res.status(400).send({ message: "Invalid Email" });
+  }
+
+  if(!validator.isStrongPassword(password)){
+    return res.status(400).send({message: "Use Strong Password"});
   }
 
   try {
