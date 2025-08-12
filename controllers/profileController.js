@@ -1,4 +1,4 @@
-const Profile = require("../models/profileModel");
+const Profile = require("../models/profileModels");
 
 
 const getProfile = async (req,res)=>{
@@ -14,7 +14,7 @@ const getProfile = async (req,res)=>{
 const createProfile = async (req,res)=> {  
     const { imageUrl, summary, skills, workExperience, linkedinUrl, githubUrl, codingPlatform, resumeUrl} = req.body;
 
-    if (!imageUrl || !summary,! skills || !workExperience, !linkedinUrl || !githubUrl, !codingPlatform || !resumeUrl){
+    if (!imageUrl || !summary || !skills || !workExperience || !linkedinUrl || !githubUrl || !codingPlatform || !resumeUrl){
         return res.status(400).send({ message: "Please Add all mandatory fields" });
     }
     // console.log(req.user);
@@ -42,6 +42,28 @@ const createProfile = async (req,res)=> {
 
 }
 
+const updateProfile = async(req, res) =>{
+    const { imageUrl, summary, skills, workExperience, linkedinUrl, githubUrl, codingPlatform, resumeUrl} = req.body;
 
+    if (!imageUrl || !summary || !skills || !workExperience || !linkedinUrl || !githubUrl || !codingPlatform || !resumeUrl){
+        return res.status(400).send({ message: "Please Add all mandatory fields" });
+    }
 
-module.exports = {getProfile, createProfile};
+    const updatedProfile = await Profile.findByIdAndUpdate(req.params.id, {
+        imageUrl,
+        summary,
+        skills, 
+        workExperience,
+        linkedinUrl,
+        githubUrl, 
+        codingPlatform,
+        resumeUrl
+    }, { new: true });
+
+    return res.status(200).json({ 
+        message: "Profile Updated",
+        data: updatedProfile
+    });
+}
+
+module.exports = {getProfile, createProfile, updateProfile};
