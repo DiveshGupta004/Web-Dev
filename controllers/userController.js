@@ -1,7 +1,8 @@
-const User = require("../models/userModels");
+const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
+const generateToken = require("../utils/generateTokens");
 const validator = require("validator");
-const generateToken = require("../utils/generateToken");
+
 
 const registerUser = async (req, res) => {
   const { firstName, lastName, emailId, password } = req.body;
@@ -13,12 +14,14 @@ const registerUser = async (req, res) => {
   }
 
   if(!validator.isEmail(emailId)){
-    return res.status(400).send({ message: "Invalid Email" });
+    return res.status(400).send({ message: "Please Provide Correct Email" });
   }
 
   if(!validator.isStrongPassword(password)){
-    return res.status(400).send({message: "Use Strong Password"});
+    return res.status(400).send({ message: "Please Provide Strong Password" });
   }
+
+
 
   try {
     //Check the user existing already in db or not
@@ -43,6 +46,7 @@ const registerUser = async (req, res) => {
 
     return res.status(201).json({
       message: "USER ADDED SUCCESSFULLY",
+      token,
     });
   } catch (err) {
     return res.status(500).json({
